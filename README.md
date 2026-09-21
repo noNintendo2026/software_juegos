@@ -4,7 +4,7 @@ Repositorio del grupo de software de juegos para el proyecto del cubo de juegos 
 
 ## Carpetas
 
-- [`pong/`](pong)
-- [`space_invaders/`](space_invaders)
-- [`snake/`](snake)
-- [`roadFighter/`](roadFighter)
+- [Pong](./pong)
+- [Space Invaders](./space_invaders)
+- [Snake](./snake)
+- [Road Fighter](./roadFighter)

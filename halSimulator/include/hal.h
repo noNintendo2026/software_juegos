@@ -1,7 +1,7 @@
 #pragma once
+#include "basic_font.h"
 #include <SDL2/SDL.h>
 #include <stdint.h>
-#include <string.h>
 
 struct rgb {
   uint8_t r;
@@ -19,7 +19,6 @@ typedef enum {
   ACTION_SELECT
 } Action;
 
-
 struct keys {
   SDL_Keycode UP;
   SDL_Keycode DOWN;
@@ -36,13 +35,12 @@ struct keys default_keys = {.UP = SDLK_UP,
                             .START = SDLK_RETURN,
                             .SELECT = SDLK_RSHIFT};
 
-
 // -- Screen hal
 struct rgb hex2rgb(uint16_t hexColor);
 void sendSprite(const uint16_t *sprite, uint8_t x, uint8_t y, uint8_t w,
                 uint8_t h);
 void sendBackground(const uint16_t *sprite);
-int initTestingScreen(int argc, char *argv[]);
+int initScreen(int argc, char *argv[]);
 
 void sendLetter(char s, uint8_t x, uint8_t y, uint8_t w, uint8_t h);
 
@@ -89,10 +87,6 @@ struct rgb hex2rgb(uint16_t hexColor) {
   return color;
 }
 
-void sendBackground(const uint16_t *sprite) {
-  sendSprite(sprite, 0, 0, 64, 64);
-};
-
 void sendSprite(const uint16_t *sprite, uint8_t x, uint8_t y, uint8_t w,
                 uint8_t h) {
   if (!global_renderer)
@@ -122,7 +116,39 @@ void sendSprite(const uint16_t *sprite, uint8_t x, uint8_t y, uint8_t w,
   }
 }
 
-int initTestingScreen(int argc, char *argv[]) {
+void sendBackground(const uint16_t *sprite) {
+  sendSprite(sprite, 0, 0, 64, 64);
+};
+
+void sendLetter(char s, uint8_t x, uint8_t y, uint8_t w, uint8_t h) {
+  if (s < 32 || s > 126) {
+    s = '?';
+  }
+
+  int font_index = (s - 32) * w;
+  uint16_t sprite_buffer[35];
+
+  for (uint8_t col = 0; col < w; col++) {
+    uint8_t column_data = usg_font_5x7[font_index + col];
+    for (uint8_t row = 0; row < h; row++) {
+
+      int bit = (column_data >> row) & 1;
+
+      sprite_buffer[row * w + col] = bit ? 0xFFF : 0x0843;
+    }
+  }
+  sendSprite(sprite_buffer, x, y, w, h);
+}
+
+void sendString(char *string, uint8_t x, uint8_t y, uint8_t w, uint8_t h) {
+  uint8_t text_spacing = 2;
+  int len = strlen(string);
+  for (uint8_t i = 0; i < len; i++) {
+    sendLetter(string[i], x + (i * (w + text_spacing)), y, w, h);
+  }
+}
+
+int initScreen(int argc, char *argv[]) {
   (void)argc;
   (void)argv;
   if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -142,7 +168,8 @@ int initTestingScreen(int argc, char *argv[]) {
 
 #ifdef FPGA
 
-void sendSprite(const uint16_t *spriteAddress, uint8_t x, uint8_t y) {
+void sendSprite(const uint16_t *spriteAddress, uint8_t x, uint8_t y, uint8_t w,
+                uint8_t h) {
   // DIR_X = x;
   // DIR_Y = y;
   // BC = 0;
@@ -173,5 +200,14 @@ Action readControls(controller controller) {
   }
   return ACTION_NONE;
 };
+
+void sendString(char *string, uint8_t x, uint8_t y, uint8_t w, uint8_t h) {
+  // for (;;)
+  // sendLetter();
+}
+
+void sendLetter(char s, uint8_t x, uint8_t y, uint8_t w, uint8_t h) {
+  // sendSprite(sprite_buffer, x, y, w, h);
+}
 
 #endif

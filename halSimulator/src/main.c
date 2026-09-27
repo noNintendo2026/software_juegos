@@ -4,7 +4,7 @@
 typedef enum { SCREEN_MENU, SCREEN_GAME, SCREEN_SETTINGS } AppScreen;
 
 int main(int argc, char *argv[]) {
-  if (initTestingScreen(argc, argv) != 0) {
+  if (initScreen(argc, argv) != 0) {
     return 1;
   }
 
@@ -43,7 +43,6 @@ int main(int argc, char *argv[]) {
           break;
         case ACTION_START:
           current_screen = SCREEN_MENU;
-          printf("Current Screen: MENU");
         default:
           break;
         }
@@ -62,8 +61,10 @@ int main(int argc, char *argv[]) {
     switch (current_screen) {
     case SCREEN_MENU:
       sendBackground(bc_sample);
+      // FEATURE: We need something to be able to center it or select the text
+      // from the center.
+      sendString("Menu", 5, 5, 5, 7);
       break;
-
     case SCREEN_GAME:
       sendBackground(bc_sample);
       sendSprite(sample, x, y, 8, 8);

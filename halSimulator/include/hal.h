@@ -19,6 +19,7 @@ typedef enum {
   ACTION_SELECT
 } Action;
 
+
 struct keys {
   SDL_Keycode UP;
   SDL_Keycode DOWN;
@@ -34,6 +35,7 @@ struct keys default_keys = {.UP = SDLK_UP,
                             .LEFT = SDLK_LEFT,
                             .START = SDLK_RETURN,
                             .SELECT = SDLK_RSHIFT};
+
 
 // -- Screen hal
 struct rgb hex2rgb(uint16_t hexColor);

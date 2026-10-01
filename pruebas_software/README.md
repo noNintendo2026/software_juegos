@@ -34,6 +34,26 @@ importante tener un espacio seguro para probar que evitar la repetición.
   - `ps2_mouse.c` — decodificador real de paquetes PS/2 del mouse (3-4 bytes, X/Y en
     complemento a 2, botones, modo IntelliMouse con rueda), probado con paquetes construidos
     según el protocolo documentado por el equipo de `ps2_mouse` (4/4 pruebas `[OK]`).
+  - `basic_font.h` — copia exacta del font `usg_font_5x7` del propio equipo (ya usado por el
+    simulador SDL), reutilizado para que las letras se vean igual en el simulador y en
+    hardware real.
+  - `display_spi.c` — driver real de `sendSprite`/`sendBackground`/`sendLetter`/`sendString`
+    contra el protocolo SPI del `Display-Driver` (trama de 32 bits Comando+Coordenada+Color).
+    Antes estos eran cuerpos vacíos (comentados) en el bloque `#ifdef FPGA` del `hal.h`
+    original. El reparto exacto de bits dentro de la trama de 32 bits es **ASUMIDO** (ver
+    `PENDIENTES_EXTERNOS.md`, punto 8). Probado: 5/5 `[OK]` (empaquetado/recuperación de la
+    trama para las 4 esquinas reales de la pantalla de 64x64 + un caso de colorkey).
+  - `uart_chainbus.c` — capa física UART real (según el CSR propuesto por ese equipo:
+    `TX_DATA`/`RX_DATA`/`STATUS`) + armado de tramas Chain Bus (protocolo del fabricante
+    M5Stack para las pantallas Chain Mono del marcador de puntaje). El CRC usado es un
+    **relleno explícito**, no el algoritmo real de M5Stack (ver `PENDIENTES_EXTERNOS.md`,
+    punto 9). Probado: 3/3 `[OK]` (cabecera, longitud, index/cmd y cola de la trama).
+  - `spi_flash.c` — driver real de la memoria SPI Flash (comandos `READ`/`FAST READ`/
+    `Write Enable`/`Page Program`/`Sector`/`Block Erase`, todos documentados por el equipo de
+    `spi_flash_ctrl`). El mapa de registros CSR del controlador es **ASUMIDO** (ese equipo
+    solo documentó el protocolo SPI genérico de la memoria, no su propio controlador — ver
+    `PENDIENTES_EXTERNOS.md`, punto 6). Probado: 4/4 `[OK]`, incluyendo el ejemplo exacto de
+    lectura que el equipo puso en su propio README.
 
 - **`PENDIENTES_EXTERNOS.md`** — lista concreta de lo que falta confirmar con otros equipos
   (protocolo NES, protocolo I2C, registro de disparo de I2S, combinación de las 4 pantallas,

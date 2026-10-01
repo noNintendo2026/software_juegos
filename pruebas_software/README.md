@@ -57,8 +57,14 @@ importante tener un espacio seguro para probar que evitar la repetición.
 
 - **`PENDIENTES_EXTERNOS.md`** — lista concreta de lo que falta confirmar con otros equipos
   (protocolo NES, protocolo I2C, registro de disparo de I2S, combinación de las 4 pantallas,
-  toolchain de RISC-V, offsets de registro asumidos, 3 scan codes sin confirmar en texto).
-  Son preguntas, no respuestas inventadas.
+  toolchain de RISC-V, offsets de registro asumidos, 3 scan codes sin confirmar en texto, ancho
+  de la trama del display, CRC/opcodes del Chain Bus). Son preguntas, no respuestas inventadas.
+
+- **`juegos_mejorados/`** — contenidos pendientes (punto 7): implementa las 4 mecánicas reales
+  de `roadFighter` que el `main.c` original nunca tenía (combustible, tráfico, choques,
+  límites de pantalla) reusando sus propios sprites ya existentes, y un Pong real desde cero
+  (la carpeta `pong/` del repositorio solo tenía una copia de Space Invaders). Ver su propio
+  README para detalle y cómo compilar.
 
 ## Nota
 

@@ -21,6 +21,25 @@ importante tener un espacio seguro para probar que evitar la repetición.
   `Display-Driver`, etc.). Sirve para que el equipo de software entienda qué debe implementar
   `hal.h` contra el hardware real.
 
+- **`hal_real/`** — implementación real del HAL contra hardware, empezando a resolver los 8
+  problemas de "conectar hardware real a los juegos" identificados al analizar el repo:
+  - `hal_shared.h` — contrato **unificado** del HAL (arregla el bug real de que
+    `readControls()` tenía firmas distintas en el bloque de simulador y en el de hardware),
+    con el mapa de memoria real confirmado, offsets de registro **ASUMIDOS** (marcados
+    explícitamente, pendientes de confirmar con cada equipo — ver `PENDIENTES_EXTERNOS.md`),
+    el macro `MMIO32()` para acceso real al bus, y los nuevos tipos `MouseState`/`pollMouse()`.
+  - `ps2_keyboard.c` — decodificador real de scan codes PS/2 set 2 (make/break/extendida),
+    probado contra la secuencia de ejemplo que el propio equipo de `ps2_keyboard.v` documentó
+    en su README (4/4 pruebas `[OK]`, ver comentarios del archivo para compilar la prueba).
+  - `ps2_mouse.c` — decodificador real de paquetes PS/2 del mouse (3-4 bytes, X/Y en
+    complemento a 2, botones, modo IntelliMouse con rueda), probado con paquetes construidos
+    según el protocolo documentado por el equipo de `ps2_mouse` (4/4 pruebas `[OK]`).
+
+- **`PENDIENTES_EXTERNOS.md`** — lista concreta de lo que falta confirmar con otros equipos
+  (protocolo NES, protocolo I2C, registro de disparo de I2S, combinación de las 4 pantallas,
+  toolchain de RISC-V, offsets de registro asumidos, 3 scan codes sin confirmar en texto).
+  Son preguntas, no respuestas inventadas.
+
 ## Nota
 
 Esta carpeta vive en una rama (`software-juan-camilo-pruebas`), no en `main`, precisamente para no

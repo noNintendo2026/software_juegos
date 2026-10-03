@@ -18,47 +18,49 @@ int main(int argc, char *argv[]) {
   AppScreen current_screen = SCREEN_GAME;
 
   while (running) {
-    Action action = readControls(&running, &default_keys);
+    uint8_t actions = readControls(&running, &default_keys);
 
     switch (current_screen) {
     case SCREEN_MENU:
-      if (action == ACTION_START) {
+      if (actions & (NES_BIT_START | NES_BIT_A)) {
         current_screen = SCREEN_GAME;
+      } else if (actions & (NES_BIT_SELECT | NES_BIT_B)) {
+        current_screen = SCREEN_SETTINGS;
       }
       break;
 
     case SCREEN_GAME:
-      if (action == ACTION_SELECT) {
+      if (actions & (NES_BIT_START | NES_BIT_B)) {
         current_screen = SCREEN_MENU;
       } else {
-        switch (action) {
-        case ACTION_UP:
-          playSound(move_sound);
+        int moved = 0;
+        if (actions & NES_BIT_UP) {
           y--;
-          break;
-        case ACTION_DOWN:
-          playSound(move_sound);
-          y++;
-          break;
-        case ACTION_LEFT:
-          playSound(move_sound);
-          x--;
-          break;
-        case ACTION_RIGHT:
-          playSound(move_sound);
-          x++;
-          break;
-        case ACTION_START:
-          current_screen = SCREEN_MENU;
-          playSound(menu_sound);
-          break;
-        default:
-          break;
+          moved = 1;
         }
+        if (actions & NES_BIT_DOWN) {
+          y++;
+          moved = 1;
+        }
+        if (actions & NES_BIT_LEFT) {
+          x--;
+          moved = 1;
+        }
+        if (actions & NES_BIT_RIGHT) {
+          x++;
+          moved = 1;
+        }
+        if (moved)
+          playSound(move_sound);
+        if (actions & (NES_BIT_A | NES_BIT_SELECT))
+          playSound(menu_sound);
       }
       break;
+
     case SCREEN_SETTINGS:
-      if (action == ACTION_SELECT) {
+      if (actions & (NES_BIT_START | NES_BIT_A)) {
+        current_screen = SCREEN_GAME;
+      } else if (actions & (NES_BIT_SELECT | NES_BIT_B)) {
         current_screen = SCREEN_MENU;
       }
       break;
@@ -85,7 +87,7 @@ int main(int argc, char *argv[]) {
     }
 
     SDL_RenderPresent(global_renderer);
-    SDL_Delay(16);
+    SDL_Delay(50);
   }
 
   SDL_Quit();

@@ -5,21 +5,21 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+
+#define NES_BIT_RIGHT (1 << 0)
+#define NES_BIT_LEFT (1 << 1)
+#define NES_BIT_DOWN (1 << 2)
+#define NES_BIT_UP (1 << 3)
+#define NES_BIT_START (1 << 4)
+#define NES_BIT_SELECT (1 << 5)
+#define NES_BIT_B (1 << 6)
+#define NES_BIT_A (1 << 7)
+
 struct rgb {
   uint8_t r;
   uint8_t g;
   uint8_t b;
 };
-
-typedef enum {
-  ACTION_NONE = 0,
-  ACTION_UP,
-  ACTION_DOWN,
-  ACTION_RIGHT,
-  ACTION_LEFT,
-  ACTION_START,
-  ACTION_SELECT
-} Action;
 
 struct keys {
   SDL_Keycode UP;
@@ -27,7 +27,8 @@ struct keys {
   SDL_Keycode RIGHT;
   SDL_Keycode LEFT;
   SDL_Keycode START;
-  SDL_Keycode SELECT;
+  SDL_Keycode A;
+  SDL_Keycode B;
 };
 
 struct keys default_keys = {.UP = SDLK_UP,
@@ -35,7 +36,8 @@ struct keys default_keys = {.UP = SDLK_UP,
                             .RIGHT = SDLK_RIGHT,
                             .LEFT = SDLK_LEFT,
                             .START = SDLK_RETURN,
-                            .SELECT = SDLK_RSHIFT};
+                            .A = SDLK_a,
+                            .B = SDLK_b};
 
 // -- Screen hal
 struct rgb hex2rgb(uint16_t hexColor);
@@ -47,7 +49,7 @@ int initScreen(int argc, char *argv[]);
 void sendLetter(char s, uint8_t x, uint8_t y, uint8_t w, uint8_t h);
 
 // -- Controls hal
-Action readControls(int *running, struct keys *bindings);
+uint8_t readControls(int *running, struct keys *bindings);
 static SDL_Renderer *global_renderer = NULL;
 
 typedef int SoundID;
@@ -56,28 +58,33 @@ SoundID initSound(const char *filepath);
 void playSound(SoundID audio_id);
 
 #ifndef FPGA
-Action readControls(int *running, struct keys *bindings) {
+uint8_t readControls(int *running, struct keys *bindings) {
   SDL_Event event;
 
   while (SDL_PollEvent(&event)) {
     if (event.type == SDL_QUIT) {
       *running = 0;
-    } else if (event.type == SDL_KEYDOWN) {
-      if (event.key.keysym.sym == bindings->UP)
-        return ACTION_UP;
-      if (event.key.keysym.sym == bindings->DOWN)
-        return ACTION_DOWN;
-      if (event.key.keysym.sym == bindings->RIGHT)
-        return ACTION_RIGHT;
-      if (event.key.keysym.sym == bindings->LEFT)
-        return ACTION_LEFT;
-      if (event.key.keysym.sym == bindings->START)
-        return ACTION_START;
-      if (event.key.keysym.sym == bindings->SELECT)
-        return ACTION_SELECT;
     }
   }
-  return ACTION_NONE;
+  const Uint8 *keystate = SDL_GetKeyboardState(NULL);
+  uint8_t serialData = 0b000000;
+
+  if (keystate[SDL_GetScancodeFromKey(bindings->UP)])
+    serialData |= NES_BIT_UP;
+  if (keystate[SDL_GetScancodeFromKey(bindings->DOWN)])
+    serialData |= NES_BIT_DOWN;
+  if (keystate[SDL_GetScancodeFromKey(bindings->LEFT)])
+    serialData |= NES_BIT_LEFT;
+  if (keystate[SDL_GetScancodeFromKey(bindings->RIGHT)])
+    serialData |= NES_BIT_RIGHT;
+  if (keystate[SDL_GetScancodeFromKey(bindings->START)])
+    serialData |= NES_BIT_START;
+  if (keystate[SDL_GetScancodeFromKey(bindings->A)])
+    serialData |= NES_BIT_A;
+  if (keystate[SDL_GetScancodeFromKey(bindings->B)])
+    serialData |= NES_BIT_B;
+
+  return serialData;
 };
 
 struct rgb hex2rgb(uint16_t hexColor) {

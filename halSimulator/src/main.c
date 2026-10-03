@@ -7,6 +7,9 @@ int main(int argc, char *argv[]) {
   if (initScreen(argc, argv) != 0) {
     return 1;
   }
+  SoundID move_sound =
+      initSound("../assets/mixkit-video-game-retro-click-237.wav");
+  SoundID menu_sound = initSound("../assets/mixkit-game-ball-tap-2073.wav");
 
   int running = 1;
   uint8_t x = 0;
@@ -30,19 +33,25 @@ int main(int argc, char *argv[]) {
       } else {
         switch (action) {
         case ACTION_UP:
+          playSound(move_sound);
           y--;
           break;
         case ACTION_DOWN:
+          playSound(move_sound);
           y++;
           break;
         case ACTION_LEFT:
+          playSound(move_sound);
           x--;
           break;
         case ACTION_RIGHT:
+          playSound(move_sound);
           x++;
           break;
         case ACTION_START:
           current_screen = SCREEN_MENU;
+          playSound(menu_sound);
+          break;
         default:
           break;
         }

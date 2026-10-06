@@ -7,6 +7,13 @@ Para lograrlo, es necesario esquivar a otros vehículos y sortear diversos obst�
 | :---: | :---: |
 | <img alt="image" src="https://github.com/user-attachments/assets/53e3281b-39c7-4de8-b2d3-4346dd1ea0be"/> | <video width="400" controls src="https://github.com/user-attachments/assets/67fc98b9-b5a2-47d7-ae04-d43d84a477ce"></video> |
 
+## Paleta de Assets
+<div align=center>
+ <img width="192" height="128" alt="generalViewsF" src="https://github.com/user-attachments/assets/d6b94a26-676e-412d-a016-44b89d41940c" /> 
+</div>
+
+
+
 ## Funcionalidad
 1. Carrera contra el reloj: Cada etapa debe completarse dentro de un límite de tiempo estricto, añadiendo tensión constante a la conducción.
 

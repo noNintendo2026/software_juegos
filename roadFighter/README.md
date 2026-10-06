@@ -2,7 +2,8 @@
 Road Fighter es el clásico video-juego de carreras desarrollado y publicado por Konami en 1984, considerado uno de los pioneros del género de carreras de vista cenital (top-down). El objetivo principal del jugador es conducir un coche de carreras rojo a lo largo de varias etapas para llegar a la meta antes de que se agote el tiempo límite y sin quedarse sin combustible.
 Para lograrlo, es necesario esquivar a otros vehículos y sortear diversos obstáculos en la carretera, gestionando velocidad y el combustible.
 
-[Image of the game]("Img.url")
+<img width="519" height="513" alt="image" src="https://github.com/user-attachments/assets/53e3281b-39c7-4de8-b2d3-4346dd1ea0be"/>
+
 
 ## Funcionalidad
 1. Carrera contra el reloj: Cada etapa debe completarse dentro de un límite de tiempo estricto, añadiendo tensión constante a la conducción.
